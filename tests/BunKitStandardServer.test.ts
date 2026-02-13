@@ -103,6 +103,20 @@ describe("BunKitStandardServer", () => {
     expect(response.body).toEqual({ message: "controller working" });
   });
 
+  it("should expose a default health endpoint", async () => {
+    const controllersModule = new ControllersModule([]);
+
+    const server = BunKitStandardServer(port, controllersModule);
+    await server.initialize();
+    const handler = buildHandler(server);
+
+    const response = await requestJson(handler, "/health", { method: "GET" });
+    expect(response.status).toBe(200);
+    expect(response.body?.status).toBe("ok");
+    expect(typeof response.body?.hostname).toBe("string");
+    expect(typeof response.body?.timestamp).toBe("string");
+  });
+
   it("should inject parameters using decorators", async () => {
     const controllersModule = new ControllersModule([UsersController]);
 

@@ -3,6 +3,7 @@ import {
   CorsModule,
   ControllersModule,
   FileUploadModule,
+  HealthModule,
   RateLimitModule,
   RequestContextModule,
   SecurityModule,
@@ -87,7 +88,10 @@ export function BunKitStandardServer(
 
   addServices(options?.services);
 
-  const modulesToRegister: BaseServerModule[] = [controllersModule];
+  const modulesToRegister: BaseServerModule[] = [
+    controllersModule,
+    new HealthModule(),
+  ];
 
   const preset = options?.modules;
   const registerModule = (
