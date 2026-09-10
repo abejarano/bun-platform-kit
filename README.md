@@ -53,6 +53,30 @@ const fileUpload = new FileUploadModule({
 });
 ```
 
+## WebSocket integrations
+
+Use `BunWebSocketAdapter` when a WebSocket library needs direct access to Bun's native `fetch` and `websocket` handlers while keeping the normal Bun Platform Kit router as the fallback.
+
+```typescript
+import { BunKitServer, BunWebSocketAdapter } from "bun-platform-kit";
+
+const adapter = new BunWebSocketAdapter({
+  beforeFetch: (request, server, next) => {
+    const url = new URL(request.url);
+    if (!url.pathname.startsWith("/socket.io/")) {
+      return next();
+    }
+
+    return engine.handleRequest(request, server);
+  },
+  websocket: engine.handler().websocket,
+});
+
+const server = new BunKitServer(3000, { adapter });
+```
+
+The adapter does not depend on Socket.IO; consumers can plug in any Bun-compatible WebSocket engine.
+
 ## Contributing
 
 1. Fork the repository
